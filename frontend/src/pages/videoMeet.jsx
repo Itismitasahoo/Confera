@@ -494,16 +494,21 @@ export default function VideoMeetComponent() {
   return (
     <div>
       {askForUsername === true ? (
-        <div>
-          <h2>Enter into Lobby </h2>
+        <div className={styles.lobbyContainer}>
+          <h2 className={styles.lobbyHeading}>Enter into Lobby</h2>
           <TextField
+            className={styles.usernameField}
             id="outlined-basic"
             label="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             variant="outlined"
           />
-          <Button variant="contained" onClick={connect}>
+          <Button
+            className={styles.connectButton}
+            variant="contained"
+            onClick={connect}
+          >
             Connect
           </Button>
 
@@ -536,13 +541,18 @@ export default function VideoMeetComponent() {
 
                 <div className={styles.chattingArea}>
                   <TextField
+                    className={styles.chatInput}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     id="outlined-basic"
                     label="Enter Your chat"
                     variant="outlined"
                   />
-                  <Button variant="contained" onClick={sendMessage}>
+                  <Button
+                    className={styles.sendButton}
+                    variant="contained"
+                    onClick={sendMessage}
+                  >
                     Send
                   </Button>
                 </div>
