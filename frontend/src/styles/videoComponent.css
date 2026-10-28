@@ -1,0 +1,267 @@
+/* Main meeting page */
+
+.meeting-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(8, 15, 32, 0.78), rgba(13, 23, 43, 0.84)),
+    url("/background.jpg") center center / cover no-repeat fixed;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+/* Meeting header */
+.meeting-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1500px;
+  margin: 0 auto 28px;
+  padding: 18px 22px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 18px;
+  background: rgba(15, 27, 48, 0.88);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+.meeting-logo {
+  color: #ff754f;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+
+.meeting-info {
+  color: #a9b7d0;
+  font-size: 14px;
+}
+
+/* Responsive participant grid */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.video-tile {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 20px;
+  background: #101d35;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.video-tile:hover {
+  border-color: rgba(255, 117, 79, 0.65);
+  transform: translateY(-2px);
+}
+
+.video-tile video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #0a1222;
+}
+
+.video-name {
+  padding: 14px 16px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  background: #101d35;
+}
+
+/* Bottom meeting controls */
+.meeting-controls {
+  position: sticky;
+  bottom: 16px;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 32px auto 12px;
+  padding: 14px 18px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 22px;
+  background: rgba(12, 23, 43, 0.94);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+}
+
+.meeting-controls button {
+  min-width: 48px;
+  min-height: 46px;
+  padding: 10px 16px;
+  border: 1px solid #34445f;
+  border-radius: 13px;
+  background: #172640;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.meeting-controls button:hover {
+  border-color: #ff754f;
+  background: #263b5b;
+  transform: translateY(-1px);
+}
+
+.meeting-controls .leave-button {
+  border-color: #e5484d;
+  background: #e5484d;
+}
+
+.meeting-controls .leave-button:hover {
+  border-color: #c92e38;
+  background: #c92e38;
+}
+
+/* Username lobby / pre-meeting screen */
+.meeting-lobby {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  min-height: 82vh;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.meeting-lobby h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.meeting-lobby video {
+  display: block;
+  width: min(90vw, 680px);
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 22px;
+  background: #0a1222;
+  object-fit: cover;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.3);
+}
+
+/* Username input visibility */
+.meeting-lobby .MuiFormLabel-root {
+  color: #a9b7d0 !important;
+}
+
+.meeting-lobby .MuiInputBase-input {
+  color: #ffffff !important;
+}
+
+.meeting-lobby .MuiOutlinedInput-root {
+  border-radius: 12px;
+  background: rgba(15, 27, 48, 0.75);
+}
+
+.meeting-lobby .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border-color: #34445f !important;
+}
+
+.meeting-lobby .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #ff754f !important;
+}
+
+.meeting-lobby
+  .MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  border-color: #ff754f !important;
+}
+
+.meeting-lobby .MuiButton-root {
+  min-height: 44px;
+  padding: 10px 24px;
+  border-radius: 12px;
+  background-color: #ff754f;
+  color: #ffffff;
+  font-weight: 700;
+  text-transform: none;
+  box-shadow: 0 6px 18px rgba(255, 117, 79, 0.18);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.meeting-lobby .MuiButton-root:hover {
+  background-color: #ff5f3d;
+  transform: translateY(-1px);
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+  .meeting-page {
+    padding: 14px;
+  }
+
+  .meeting-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 16px;
+  }
+
+  .meeting-logo {
+    font-size: 22px;
+  }
+
+  .video-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .video-tile video {
+    aspect-ratio: 16 / 9;
+  }
+
+  .meeting-controls {
+    position: static;
+    width: auto;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .meeting-controls button {
+    min-width: 44px;
+    padding: 10px;
+  }
+
+  .meeting-lobby {
+    min-height: 75vh;
+    gap: 16px;
+    padding: 16px 0;
+  }
+
+  .meeting-lobby video {
+    width: 100%;
+    border-radius: 16px;
+  }
+}
