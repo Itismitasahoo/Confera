@@ -571,3 +571,153 @@
     font-size: 2rem;
   }
 }
+
+/* Confera Dashboard */
+
+.homePage {
+  min-height: 100vh;
+  color: white;
+  background-image: url("/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+}
+
+.homePage .navBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 5rem;
+  background: rgba(4, 15, 30, 0.75);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.homePage .navBar h2 {
+  margin: 0;
+  color: white;
+  letter-spacing: 3px;
+  font-size: 1.6rem;
+}
+
+.homePage .navBar p {
+  color: white;
+  margin: 0;
+}
+
+.homePage .navBar .MuiSvgIcon-root {
+  color: #ff7043;
+}
+
+.homePage .meetContainer {
+  min-height: calc(100vh - 85px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+  padding: 3rem 5rem;
+}
+
+.homePage .leftPanel {
+  flex: 1;
+  color: white;
+}
+
+.homePage .leftPanel h2 {
+  max-width: 650px;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.2;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.homePage .rightPanel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.homePage .rightPanel img {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.3));
+}
+
+.homePage .meetingForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 540px;
+}
+
+.homePage .meetingForm .MuiOutlinedInput-root {
+  color: white;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+.homePage .meetingForm .MuiInputLabel-root {
+  color: #cbd5e1;
+}
+
+.homePage .meetingForm .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.homePage
+  .meetingForm
+  .MuiOutlinedInput-root:hover
+  .MuiOutlinedInput-notchedOutline {
+  border-color: #ff7043;
+}
+
+.homePage .meetingForm .MuiButton-root,
+.homePage .navBar .MuiButton-root {
+  background: #ff7043;
+  color: white;
+  border-radius: 8px;
+  padding: 0.7rem 1.4rem;
+  font-weight: 600;
+  text-transform: none;
+}
+
+.homePage .meetingForm .MuiButton-root:hover,
+.homePage .navBar .MuiButton-root:hover {
+  background: #ff5722;
+}
+
+@media (max-width: 700px) {
+  .homePage .navBar {
+    padding: 1rem 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  .homePage .navBar h2 {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+  }
+
+  .homePage .meetContainer {
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+  }
+
+  .homePage .leftPanel h2 {
+    font-size: 2rem;
+  }
+
+  .homePage .meetingForm {
+    justify-content: center;
+  }
+
+  .homePage .rightPanel img {
+    max-width: 350px;
+  }
+}

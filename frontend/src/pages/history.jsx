@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "./contexts/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
@@ -11,6 +11,8 @@ import HomeIcon from "@mui/icons-material/Home";
 
 import { IconButton } from "@mui/material";
 export default function History() {
+  console.log("History component is rendering");
+
   const { getHistoryOfUser } = useContext(AuthContext);
 
   const [meetings, setMeetings] = useState([]);
@@ -71,7 +73,9 @@ export default function History() {
           );
         })
       ) : (
-        <></>
+        <Typography sx={{ textAlign: "center", mt: 4 }}>
+          No meeting history found.
+        </Typography>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { AuthContext } from "./contexts/AuthContext.jsx";
 import io from "socket.io-client";
 import { Badge, IconButton, TextField } from "@mui/material";
 import { Button } from "@mui/material";
@@ -22,6 +23,7 @@ const peerConfigConnections = {
 };
 
 export default function VideoMeetComponent() {
+  const { addToUserHistory } = useContext(AuthContext);
   var socketRef = useRef();
   let socketIdRef = useRef();
 
@@ -486,7 +488,13 @@ export default function VideoMeetComponent() {
     // this.setState({ message: "", sender: username })
   };
 
-  let connect = () => {
+  let connect = async () => {
+    try {
+      await addToUserHistory(window.location.href);
+    } catch (e) {
+      console.log("Could not save meeting history:", e);
+    }
+
     setAskForUsername(false);
     getMedia();
   };

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../App.css";
 import { Button, IconButton, TextField } from "@mui/material";
 import RestoreIcon from "@mui/icons-material/Restore";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "./contexts/AuthContext";
 
 function HomeComponent() {
   let navigate = useNavigate();
@@ -13,11 +13,11 @@ function HomeComponent() {
   const { addToUserHistory } = useContext(AuthContext);
   let handleJoinVideoCall = async () => {
     await addToUserHistory(meetingCode);
-    navigate(`/${meetingCode}`);
+    navigate("/video-meet");
   };
 
   return (
-    <>
+    <div className="homePage">
       <div className="navBar">
         <div style={{ display: "flex", alignItems: "center" }}>
           <h2>Apna Video Call</h2>
@@ -49,7 +49,7 @@ function HomeComponent() {
           <div>
             <h2>Providing Quality Video Call Just Like Quality Education</h2>
 
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div className="meetingForm">
               <TextField
                 onChange={(e) => setMeetingCode(e.target.value)}
                 id="outlined-basic"
@@ -66,7 +66,7 @@ function HomeComponent() {
           <img srcSet="/logo3.png" alt="" />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
