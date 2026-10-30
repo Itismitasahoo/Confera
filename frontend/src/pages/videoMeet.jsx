@@ -13,6 +13,7 @@ import ScreenShareIcon from "@mui/icons-material/ScreenShare";
 import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
 import ChatIcon from "@mui/icons-material/Chat";
 import server from "../environment";
+import { useParams, useNavigate } from "react-router-dom";
 
 const server_url = server;
 
@@ -24,6 +25,23 @@ const peerConfigConnections = {
 
 export default function VideoMeetComponent() {
   const { addToUserHistory } = useContext(AuthContext);
+
+  const { meetingCode: urlMeetingCode } = useParams();
+  const navigate = useNavigate();
+
+  const [meetingCode] = useState(() => {
+    return (
+      urlMeetingCode ||
+      Math.random().toString(36).substring(2, 10).toUpperCase()
+    );
+  });
+
+  useEffect(() => {
+    if (!urlMeetingCode) {
+      navigate(`/video-meet/${meetingCode}`, { replace: true });
+    }
+  }, [urlMeetingCode, meetingCode, navigate]);
+
   var socketRef = useRef();
   let socketIdRef = useRef();
 
@@ -57,10 +75,24 @@ export default function VideoMeetComponent() {
 
   let [videos, setVideos] = useState([]);
 
+  const [copied, setCopied] = useState(false);
+
+  const copyMeetingCode = async () => {
+    try {
+      await navigator.clipboard.writeText(meetingCode);
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (error) {
+      console.log("Failed to copy meeting code:", error);
+    }
+  };
+
   useEffect(() => {
-    console.log("HELLO");
     getPermissions();
-  });
+  }, []);
 
   let getDislayMedia = () => {
     if (screen) {
@@ -313,7 +345,7 @@ export default function VideoMeetComponent() {
     socketRef.current.on("signal", gotMessageFromServer);
 
     socketRef.current.on("connect", () => {
-      socketRef.current.emit("join-call", window.location.href);
+      socketRef.current.emit("join-call", meetingCode);
       socketIdRef.current = socketRef.current.id;
 
       socketRef.current.on("chat-message", addMessage);
@@ -490,7 +522,7 @@ export default function VideoMeetComponent() {
 
   let connect = async () => {
     try {
-      await addToUserHistory(window.location.href);
+      await addToUserHistory(meetingCode);
     } catch (e) {
       console.log("Could not save meeting history:", e);
     }
@@ -526,6 +558,20 @@ export default function VideoMeetComponent() {
         </div>
       ) : (
         <div className={styles.meetVideoContainer}>
+          <div className={styles.meetingCodeBox}>
+            <span>
+              Meeting Code: <strong>{meetingCode}</strong>
+            </span>
+
+            <Button
+              className={styles.copyCodeButton}
+              variant="contained"
+              onClick={copyMeetingCode}
+            >
+              {copied ? "Copied!" : "Copy Code"}
+            </Button>
+          </div>
+
           {showModal ? (
             <div className={styles.chatRoom}>
               <div className={styles.chatContainer}>

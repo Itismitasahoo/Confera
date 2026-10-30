@@ -574,6 +574,8 @@
 
 /* Confera Dashboard */
 
+/* Confera Dashboard */
+
 .homePage {
   min-height: 100vh;
   color: white;
@@ -584,75 +586,110 @@
   background-attachment: fixed;
 }
 
-.homePage .navBar {
+/* Navigation */
+
+.homePage .homeNav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   padding: 1.2rem 5rem;
   background: rgba(4, 15, 30, 0.75);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.homePage .navBar h2 {
+.homePage .homeLogo {
   margin: 0;
   color: white;
-  letter-spacing: 3px;
   font-size: 1.6rem;
+  letter-spacing: 3px;
+  font-weight: 600;
 }
 
-.homePage .navBar p {
+.homePage .homeNavActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.homePage .homeNavActions .historyButton {
   color: white;
-  margin: 0;
+  text-transform: none;
+  font-size: 1rem;
 }
 
-.homePage .navBar .MuiSvgIcon-root {
+.homePage .homeNavActions .historyButton:hover {
+  color: #ff8a65;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.homePage .homeNavActions .historyButton .MuiSvgIcon-root {
   color: #ff7043;
 }
 
-.homePage .meetContainer {
-  min-height: calc(100vh - 85px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-  padding: 3rem 5rem;
-}
-
-.homePage .leftPanel {
-  flex: 1;
+.homePage .homeNavActions .logoutButton {
+  background: #ff7043;
   color: white;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  text-transform: none;
+  font-weight: 600;
 }
 
-.homePage .leftPanel h2 {
-  max-width: 650px;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 1.2;
-  font-weight: 500;
-  margin-bottom: 2rem;
+.homePage .homeNavActions .logoutButton:hover {
+  background: #ff5722;
 }
 
-.homePage .rightPanel {
-  flex: 1;
+/* Main Content */
+
+.homePage .homeContent {
+  min-height: calc(100vh - 85px);
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 3rem 1.5rem;
 }
 
-.homePage .rightPanel img {
+.homePage .joinMeetingSection {
   width: 100%;
-  max-width: 520px;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.3));
+  max-width: 650px;
+  padding: 3rem;
+  background: rgba(9, 24, 45, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  text-align: center;
 }
+
+.homePage .joinMeetingSection h1 {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin: 0 0 1rem;
+}
+
+.homePage .joinMeetingSection p {
+  color: #cbd5e1;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* Meeting Code Form */
 
 .homePage .meetingForm {
   display: flex;
-  flex-wrap: wrap;
+  align-items: stretch;
   gap: 12px;
-  max-width: 540px;
+  width: 100%;
+}
+
+.homePage .meetingForm .meetingCodeInput {
+  flex: 1;
+  min-width: 0;
 }
 
 .homePage .meetingForm .MuiOutlinedInput-root {
@@ -665,6 +702,10 @@
   color: #cbd5e1;
 }
 
+.homePage .meetingForm .MuiInputLabel-root.Mui-focused {
+  color: #ff9b7b;
+}
+
 .homePage .meetingForm .MuiOutlinedInput-notchedOutline {
   border-color: rgba(255, 255, 255, 0.3);
 }
@@ -673,51 +714,74 @@
   .meetingForm
   .MuiOutlinedInput-root:hover
   .MuiOutlinedInput-notchedOutline {
+  border-color: #ff8a65;
+}
+
+.homePage
+  .meetingForm
+  .MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
   border-color: #ff7043;
 }
 
-.homePage .meetingForm .MuiButton-root,
-.homePage .navBar .MuiButton-root {
+.homePage .meetingForm .joinButton {
+  min-width: 140px;
+  padding: 0.7rem 1.3rem;
+  border-radius: 8px;
   background: #ff7043;
   color: white;
-  border-radius: 8px;
-  padding: 0.7rem 1.4rem;
   font-weight: 600;
   text-transform: none;
+  font-size: 1rem;
 }
 
-.homePage .meetingForm .MuiButton-root:hover,
-.homePage .navBar .MuiButton-root:hover {
+.homePage .meetingForm .joinButton:hover {
   background: #ff5722;
 }
 
+.homePage .meetingForm .joinButton.Mui-disabled {
+  background: rgba(255, 112, 67, 0.4);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Responsive Design */
+
 @media (max-width: 700px) {
-  .homePage .navBar {
+  .homePage .homeNav {
     padding: 1rem 1.2rem;
-    flex-wrap: wrap;
   }
 
-  .homePage .navBar h2 {
-    font-size: 1.2rem;
+  .homePage .homeLogo {
+    font-size: 1.3rem;
     letter-spacing: 2px;
   }
 
-  .homePage .meetContainer {
-    flex-direction: column;
-    justify-content: center;
-    padding: 3rem 1.5rem;
-    text-align: center;
+  .homePage .homeNavActions {
+    gap: 0.3rem;
   }
 
-  .homePage .leftPanel h2 {
+  .homePage .homeNavActions .historyButton {
+    font-size: 0.9rem;
+  }
+
+  .homePage .homeNavActions .logoutButton {
+    padding: 0.6rem 1rem;
+  }
+
+  .homePage .joinMeetingSection {
+    padding: 2rem 1.2rem;
+  }
+
+  .homePage .joinMeetingSection h1 {
     font-size: 2rem;
   }
 
   .homePage .meetingForm {
-    justify-content: center;
+    flex-direction: column;
   }
 
-  .homePage .rightPanel img {
-    max-width: 350px;
+  .homePage .meetingForm .joinButton {
+    width: 100%;
+    min-height: 50px;
   }
 }

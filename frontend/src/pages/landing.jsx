@@ -7,8 +7,6 @@ export default function LandingPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
 
   const navigate = useNavigate();
-  const [showJoinForm, setShowJoinForm] = useState(false);
-  const [meetingCode, setMeetingCode] = useState("");
 
   const [toast, setToast] = useState("");
   const [toastType, setToastType] = useState("error");
@@ -39,39 +37,11 @@ export default function LandingPage() {
   };
 
   const handleJoinMeeting = () => {
-    setShowJoinForm(true);
-  };
-
-  const handleJoinSubmit = (e) => {
-    e.preventDefault();
-
-    const code = meetingCode.trim();
-
-    if (!code) return;
-
-    // Accept a meeting URL or a room ID.
-    let roomId = code;
-
-    try {
-      if (code.startsWith("http://") || code.startsWith("https://")) {
-        const url = new URL(code);
-        roomId = url.pathname.split("/").filter(Boolean).pop();
-      }
-    } catch {
-      setToast("Please enter a valid meeting link or code");
-      return;
-    }
-
-    if (!roomId) {
-      setToast("Please enter a valid meeting link or code");
-      return;
-    }
-
-    navigate(`/video-meet/${encodeURIComponent(roomId)}`);
+    navigate("/home");
   };
 
   const handleGuestJoin = () => {
-    navigate("/video-meet");
+    navigate("/home");
   };
 
   return (
@@ -142,25 +112,6 @@ export default function LandingPage() {
 
             <button onClick={handleJoinMeeting}>Join a Meeting</button>
           </div>
-
-          {showJoinForm && (
-            <form onSubmit={handleJoinSubmit} className="landingJoinForm">
-              <input
-                type="text"
-                value={meetingCode}
-                onChange={(e) => setMeetingCode(e.target.value)}
-                placeholder="Enter meeting code or link"
-                aria-label="Meeting code or link"
-                required
-              />
-
-              <button type="submit">Join Now</button>
-
-              <button type="button" onClick={() => setShowJoinForm(false)}>
-                Cancel
-              </button>
-            </form>
-          )}
 
           <p className="heroTrust">
             ✓ No downloads &nbsp;&nbsp; ✓ Easy to join &nbsp;&nbsp; ✓ Simple

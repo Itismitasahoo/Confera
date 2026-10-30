@@ -11,19 +11,24 @@ import HomeComponent from "./pages/home.jsx";
 
 function App() {
   return (
-    <>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
 
           <Route path="/video-meet" element={<VideoMeetComponent />} />
+          <Route
+            path="/video-meet/:meetingCode"
+            element={<VideoMeetComponent />}
+          />
+
           <Route path="/history" element={<History />} />
           <Route path="/home" element={<HomeComponent />} />
         </Routes>
-      </Router>
-    </>
+      </AuthProvider>
+    </Router>
   );
 }
 
