@@ -73,11 +73,16 @@ export const connectToSocket = (server) => {
           messages[matchingRoom] = [];
         }
 
-        messages[matchingRoom].push({
+        const timestamp = new Date().toISOString();
+
+        const message = {
           data: data,
           sender: sender,
           "socket-id-sender": socket.id,
-        });
+          timestamp: timestamp,
+        };
+
+        messages[matchingRoom].push(message);
 
         // Send message to everyone in the room
         for (let a = 0; a < connections[matchingRoom].length; a++) {
@@ -86,6 +91,7 @@ export const connectToSocket = (server) => {
             data,
             sender,
             socket.id,
+            timestamp,
           );
         }
       }

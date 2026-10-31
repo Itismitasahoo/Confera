@@ -474,3 +474,10 @@
 .chatInput :global(.MuiInputLabel-root.Mui-focused) {
   color: #ff8a65;
 }
+.messageTime {
+  font-size: 11px;
+  color: #ffb199;
+  text-align: right;
+  margin-top: 4px;
+  opacity: 0.85;
+}

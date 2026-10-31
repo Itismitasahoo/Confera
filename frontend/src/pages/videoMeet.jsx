@@ -502,11 +502,16 @@ export default function VideoMeetComponent() {
     setMessage(e.target.value);
   };
 
-  const addMessage = (data, sender, socketIdSender) => {
+  const addMessage = (data, sender, socketIdSender, timestamp) => {
     setMessages((prevMessages) => [
       ...prevMessages,
-      { sender: sender, data: data },
+      {
+        sender: sender,
+        data: data,
+        timestamp: timestamp,
+      },
     ]);
+
     if (socketIdSender !== socketIdRef.current) {
       setNewMessages((prevNewMessages) => prevNewMessages + 1);
     }
@@ -580,11 +585,24 @@ export default function VideoMeetComponent() {
                 <div className={styles.chattingDisplay}>
                   {messages.length !== 0 ? (
                     messages.map((item, index) => {
-                      console.log(messages);
                       return (
                         <div style={{ marginBottom: "20px" }} key={index}>
                           <p style={{ fontWeight: "bold" }}>{item.sender}</p>
+
                           <p>{item.data}</p>
+
+                          <p className={styles.messageTime}>
+                            {item.timestamp
+                              ? new Date(item.timestamp).toLocaleTimeString(
+                                  "en-IN",
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                  },
+                                )
+                              : ""}
+                          </p>
                         </div>
                       );
                     })
