@@ -21,6 +21,7 @@ export default function History() {
 
   const [meetings, setMeetings] = useState([]);
   const [copiedCode, setCopiedCode] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -31,6 +32,8 @@ export default function History() {
         setMeetings(history);
       } catch (error) {
         console.error("Error fetching meeting history:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -86,7 +89,11 @@ export default function History() {
           <span>{meetings.length} Meetings</span>
         </div>
 
-        {meetings.length > 0 ? (
+        {isLoading ? (
+          <Typography className="historySubtitle">
+            Loading your meeting history...
+          </Typography>
+        ) : meetings.length > 0 ? (
           <div className="historyGrid">
             {meetings.map((meeting, index) => (
               <Card
