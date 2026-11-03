@@ -225,7 +225,10 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
+      {/* Footer */}
       <footer className="footer">
+        <p className="copyright">&#169; 2026 Confera. All rights reserved.</p>
+
         <p>
           Built with <span>&#9829;</span> by{" "}
           <a
