@@ -34,7 +34,7 @@ const start = async () => {
 
     console.log(`MONGO connected DB host: ${connectionDb.connection.host}`);
 
-    server.listen(app.get("port"), () => {
+    server.listen(app.get("port"), "0.0.0.0", () => {
       console.log(`App listening on port ${app.get("port")}`);
     });
   } catch (error) {
