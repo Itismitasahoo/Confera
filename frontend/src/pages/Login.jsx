@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Auth.css";
 import Toast from "../Toast.jsx";
+import server from "../environment";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -25,7 +26,7 @@ export default function Login() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/users/login", {
+      const response = await fetch(`${server}/api/v1/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

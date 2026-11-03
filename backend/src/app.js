@@ -1,4 +1,6 @@
 import dns from "dns";
+import dotenv from "dotenv";
+dotenv.config();
 
 dns.setServers(["8.8.8.8"]);
 
@@ -28,14 +30,12 @@ app.get("/home", (req, res) => {
 
 const start = async () => {
   try {
-    const connectionDb = await mongoose.connect(
-      "mongodb+srv://itismitasahoo82_db_user:mongoPassword@confera.doj2sqd.mongodb.net/?appName=confera",
-    );
+    const connectionDb = await mongoose.connect(process.env.MONGO_URI);
 
     console.log(`MONGO connected DB host: ${connectionDb.connection.host}`);
 
     server.listen(app.get("port"), () => {
-      console.log("app listening on port 8000");
+      console.log(`App listening on port ${app.get("port")}`);
     });
   } catch (error) {
     console.log("MongoDB connection failed:", error.message);

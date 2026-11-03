@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../Auth.css";
 import Toast from "../Toast.jsx";
+import server from "../environment";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -27,20 +28,17 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch(
-        "http://localhost:8000/api/v1/users/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            username,
-            password,
-          }),
+      const response = await fetch(`${server}/api/v1/users/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          name,
+          username,
+          password,
+        }),
+      });
 
       const data = await response.json();
 
