@@ -717,6 +717,16 @@ export default function VideoMeetComponent() {
           </div>
 
           <div className={styles.conferenceView}>
+            {/* Your own video */}
+            <div className={styles.videoTile}>
+              <video ref={localVideoref} autoPlay muted playsInline />
+
+              <div className={styles.participantName}>
+                {username || "You"} (You)
+              </div>
+            </div>
+
+            {/* Other participants' videos */}
             {videos.map((video) => (
               <div key={video.socketId} className={styles.videoTile}>
                 <video
