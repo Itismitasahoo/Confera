@@ -173,13 +173,23 @@ Confera is deployed using separate frontend and backend services.
 
 ## 📸 Screenshots
 
-<!-- Add screenshots of the landing page, dashboard, and meeting interface here. -->
+Screenshots of the application will be added soon.
 
-## 📄 License
+## 👩‍💻 Author
 
-A license has not yet been specified for this project.
+**Itismita Sahoo**
 
----
+Developer of Confera.
+
+<p>
+  <a href="https://github.com/Itismitasahoo">
+    <img src="https://img.shields.io/badge/GitHub-Itismitasahoo-181717?style=for-the-badge&logo=github" alt="GitHub" />
+  </a>
+  <a href="https://linkedin.com/in/itismitasahoo">
+    <img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin" alt="LinkedIn" />
+  </a>
+</p>
+
 
 <p align="center">
   <strong>Confera</strong>
