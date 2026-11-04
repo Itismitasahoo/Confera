@@ -718,11 +718,13 @@ export default function VideoMeetComponent() {
 
           <div className={styles.conferenceView}>
             {/* Your own video */}
-            <div className={styles.videoTile}>
-              <video ref={localVideoref} autoPlay muted playsInline />
+            <div className={styles.selfVideoContainer}>
+              <div className={styles.videoTile}>
+                <video ref={localVideoref} autoPlay muted playsInline />
 
-              <div className={styles.participantName}>
-                {username || "You"} (You)
+                <div className={styles.participantName}>
+                  {username || "You"} (You)
+                </div>
               </div>
             </div>
 
