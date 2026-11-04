@@ -65,6 +65,8 @@ export default function VideoMeetComponent() {
 
   let [message, setMessage] = useState("");
 
+  const [meetingActivity, setMeetingActivity] = useState([]);
+
   let [newMessages, setNewMessages] = useState(3);
 
   let [askForUsername, setAskForUsername] = useState(true);
@@ -350,11 +352,32 @@ export default function VideoMeetComponent() {
 
       socketRef.current.on("chat-message", addMessage);
 
-      socketRef.current.on("user-left", (id) => {
+      socketRef.current.on("user-left", (id, name) => {
         setVideos((videos) => videos.filter((video) => video.socketId !== id));
+
+        setMeetingActivity((prev) => [
+          ...prev,
+          {
+            id: Date.now(),
+            text: `${name || "A participant"} left the meeting`,
+          },
+        ]);
       });
 
-      socketRef.current.on("user-joined", (id, clients) => {
+      socketRef.current.on("user-joined", (id, clients, usernames) => {
+        // Show notification when another participant joins
+        if (id !== socketIdRef.current) {
+          const joinedName = usernames?.[id] || "A participant";
+
+          setMeetingActivity((prev) => [
+            ...prev,
+            {
+              id: Date.now(),
+              text: `${joinedName} joined the meeting`,
+            },
+          ]);
+        }
+
         clients.forEach((socketListId) => {
           connections[socketListId] = new RTCPeerConnection(
             peerConfigConnections,
@@ -386,7 +409,11 @@ export default function VideoMeetComponent() {
               setVideos((videos) => {
                 const updatedVideos = videos.map((video) =>
                   video.socketId === socketListId
-                    ? { ...video, stream: event.stream }
+                    ? {
+                        ...video,
+                        stream: event.stream,
+                        username: usernames[socketListId] || "Participant",
+                      }
                     : video,
                 );
                 videoRef.current = updatedVideos;
@@ -398,6 +425,7 @@ export default function VideoMeetComponent() {
               let newVideo = {
                 socketId: socketListId,
                 stream: event.stream,
+                username: usernames[socketListId] || "Participant",
                 autoplay: true,
                 playsinline: true,
               };
@@ -557,8 +585,10 @@ export default function VideoMeetComponent() {
             Connect
           </Button>
 
-          <div>
+          <div className={styles.videoTile}>
             <video ref={localVideoref} autoPlay muted></video>
+
+            <div className={styles.participantName}>{username || "You"}</div>
           </div>
         </div>
       ) : (
@@ -583,6 +613,14 @@ export default function VideoMeetComponent() {
                 <h1>Chat</h1>
 
                 <div className={styles.chattingDisplay}>
+                  {/* Meeting join/leave notifications */}
+                  {meetingActivity.map((activity) => (
+                    <div key={activity.id} className={styles.meetingActivity}>
+                      {activity.text}
+                    </div>
+                  ))}
+
+                  {/* Normal chat messages */}
                   {messages.length !== 0 ? (
                     messages.map((item, index) => {
                       return (
@@ -667,16 +705,20 @@ export default function VideoMeetComponent() {
             </Badge>
           </div>
 
-          <video
-            className={styles.meetUserVideo}
-            ref={localVideoref}
-            autoPlay
-            muted
-          ></video>
+          <div className={styles.videoTile}>
+            <video
+              className={styles.meetUserVideo}
+              ref={localVideoref}
+              autoPlay
+              muted
+            />
+
+            <div className={styles.participantName}>{username || "You"}</div>
+          </div>
 
           <div className={styles.conferenceView}>
             {videos.map((video) => (
-              <div key={video.socketId}>
+              <div key={video.socketId} className={styles.videoTile}>
                 <video
                   data-socket={video.socketId}
                   ref={(ref) => {
@@ -685,7 +727,12 @@ export default function VideoMeetComponent() {
                     }
                   }}
                   autoPlay
-                ></video>
+                  playsInline
+                />
+
+                <div className={styles.participantName}>
+                  {video.username || "Participant"}
+                </div>
               </div>
             ))}
           </div>
