@@ -179,7 +179,6 @@ Screenshots of the application will be added soon.
 
 **Itismita Sahoo**
 
-Developer of Confera.
 
 <p>
   <a href="https://github.com/Itismitasahoo">
