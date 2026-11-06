@@ -109,49 +109,58 @@ export default function VideoMeetComponent() {
   };
 
   const getPermissions = async () => {
+    let videoStream = null;
+    let audioStream = null;
+
+    // Request camera with balanced video quality
     try {
-      const videoPermission = await navigator.mediaDevices.getUserMedia({
-        video: true,
+      videoStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          frameRate: { ideal: 30, max: 30 },
+        },
       });
-      if (videoPermission) {
-        setVideoAvailable(true);
-        console.log("Video permission granted");
-      } else {
-        setVideoAvailable(false);
-        console.log("Video permission denied");
-      }
 
-      const audioPermission = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
-      if (audioPermission) {
-        setAudioAvailable(true);
-        console.log("Audio permission granted");
-      } else {
-        setAudioAvailable(false);
-        console.log("Audio permission denied");
-      }
-
-      if (navigator.mediaDevices.getDisplayMedia) {
-        setScreenAvailable(true);
-      } else {
-        setScreenAvailable(false);
-      }
-
-      if (videoAvailable || audioAvailable) {
-        const userMediaStream = await navigator.mediaDevices.getUserMedia({
-          video: videoAvailable,
-          audio: audioAvailable,
-        });
-        if (userMediaStream) {
-          window.localStream = userMediaStream;
-          if (localVideoref.current) {
-            localVideoref.current.srcObject = userMediaStream;
-          }
-        }
-      }
+      setVideoAvailable(true);
+      console.log("Video permission granted");
     } catch (error) {
-      console.log(error);
+      setVideoAvailable(false);
+      console.log("Video permission unavailable:", error);
+    }
+
+    // Request microphone with audio processing
+    try {
+      audioStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+
+      setAudioAvailable(true);
+      console.log("Audio permission granted");
+    } catch (error) {
+      setAudioAvailable(false);
+      console.log("Audio permission unavailable:", error);
+    }
+
+    // Check screen-sharing support
+    setScreenAvailable(!!navigator.mediaDevices.getDisplayMedia);
+
+    // Combine available camera and microphone tracks
+    const tracks = [
+      ...(videoStream?.getVideoTracks() || []),
+      ...(audioStream?.getAudioTracks() || []),
+    ];
+
+    const userMediaStream = new MediaStream(tracks);
+
+    window.localStream = userMediaStream;
+
+    if (localVideoref.current) {
+      localVideoref.current.srcObject = userMediaStream;
     }
   };
 
