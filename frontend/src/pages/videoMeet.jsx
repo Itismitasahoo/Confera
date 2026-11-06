@@ -14,6 +14,7 @@ import StopScreenShareIcon from "@mui/icons-material/StopScreenShare";
 import ChatIcon from "@mui/icons-material/Chat";
 import server from "../environment";
 import { useParams, useNavigate } from "react-router-dom";
+import FlipCameraAndroidIcon from "@mui/icons-material/FlipCameraAndroid";
 
 const server_url = server;
 
@@ -51,6 +52,10 @@ export default function VideoMeetComponent() {
 
   let [audioAvailable, setAudioAvailable] = useState(true);
 
+  let [cameraFacing, setCameraFacing] = useState("user");
+  let [cameraSwitching, setCameraSwitching] = useState(false);
+  const [hasMultipleCameras, setHasMultipleCameras] = useState(false);
+
   let [video, setVideo] = useState([]);
 
   let [audio, setAudio] = useState();
@@ -78,6 +83,8 @@ export default function VideoMeetComponent() {
   let [videos, setVideos] = useState([]);
 
   const [copied, setCopied] = useState(false);
+
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   const copyMeetingCode = async () => {
     try {
@@ -149,6 +156,17 @@ export default function VideoMeetComponent() {
     // Check screen-sharing support
     setScreenAvailable(!!navigator.mediaDevices.getDisplayMedia);
 
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+
+      const cameras = devices.filter((device) => device.kind === "videoinput");
+
+      setHasMultipleCameras(cameras.length > 1);
+    } catch (error) {
+      console.log("Could not detect cameras:", error);
+      setHasMultipleCameras(false);
+    }
+
     // Combine available camera and microphone tracks
     const tracks = [
       ...(videoStream?.getVideoTracks() || []),
@@ -161,6 +179,73 @@ export default function VideoMeetComponent() {
 
     if (localVideoref.current) {
       localVideoref.current.srcObject = userMediaStream;
+    }
+  };
+
+  const switchCamera = async () => {
+    if (cameraSwitching || screen === true || !window.localStream) {
+      return;
+    }
+
+    const nextFacing = cameraFacing === "user" ? "environment" : "user";
+
+    setCameraSwitching(true);
+
+    let newStream;
+
+    try {
+      newStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: nextFacing },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          frameRate: { ideal: 30, max: 30 },
+        },
+        audio: false,
+      });
+
+      const newVideoTrack = newStream.getVideoTracks()[0];
+
+      if (!newVideoTrack) {
+        throw new Error("No camera track available");
+      }
+
+      const oldVideoTracks = window.localStream.getVideoTracks();
+
+      // Replace the video track for every connected participant
+      for (const id in connections) {
+        const videoSender = connections[id]
+          .getSenders()
+          .find((sender) => sender.track?.kind === "video");
+
+        if (videoSender) {
+          await videoSender.replaceTrack(newVideoTrack);
+        }
+      }
+
+      // Preserve audio and replace only the camera track
+      oldVideoTracks.forEach((track) => {
+        window.localStream.removeTrack(track);
+        track.stop();
+      });
+
+      window.localStream.addTrack(newVideoTrack);
+
+      if (localVideoref.current) {
+        localVideoref.current.srcObject = window.localStream;
+      }
+
+      setCameraFacing(nextFacing);
+    } catch (error) {
+      console.error("Camera switching failed:", error);
+
+      if (newStream) {
+        newStream.getTracks().forEach((track) => track.stop());
+      }
+
+      alert("Unable to switch camera. Please try again.");
+    } finally {
+      setCameraSwitching(false);
     }
   };
 
@@ -716,6 +801,18 @@ export default function VideoMeetComponent() {
             <IconButton onClick={handleVideo} style={{ color: "white" }}>
               {video === true ? <VideocamIcon /> : <VideocamOffIcon />}
             </IconButton>
+
+            {hasMultipleCameras && (
+              <IconButton
+                onClick={switchCamera}
+                disabled={cameraSwitching || screen === true}
+                style={{ color: cameraSwitching ? "#ffb199" : "white" }}
+                title="Switch Camera"
+              >
+                <FlipCameraAndroidIcon />
+              </IconButton>
+            )}
+
             <IconButton onClick={handleEndCall} style={{ color: "red" }}>
               <CallEndIcon />
             </IconButton>
@@ -745,17 +842,6 @@ export default function VideoMeetComponent() {
             </Badge>
           </div>
 
-          <div className={styles.videoTile}>
-            <video
-              className={styles.meetUserVideo}
-              ref={localVideoref}
-              autoPlay
-              muted
-            />
-
-            <div className={styles.participantName}>{username || "You"}</div>
-          </div>
-
           <div className={styles.conferenceView}>
             {/* Your own video */}
             <div className={styles.selfVideoContainer}>
@@ -770,7 +856,11 @@ export default function VideoMeetComponent() {
 
             {/* Other participants' videos */}
             {videos.map((video) => (
-              <div key={video.socketId} className={styles.videoTile}>
+              <div
+                key={video.socketId}
+                className={`${styles.videoTile} ${styles.clickableVideoTile}`}
+                onClick={() => setSelectedVideo(video)}
+              >
                 <video
                   data-socket={video.socketId}
                   ref={(ref) => {
@@ -787,6 +877,39 @@ export default function VideoMeetComponent() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {selectedVideo && (
+        <div
+          className={styles.enlargedVideoOverlay}
+          onClick={() => setSelectedVideo(null)}
+        >
+          <button
+            className={styles.closeEnlargedVideo}
+            onClick={() => setSelectedVideo(null)}
+          >
+            ×
+          </button>
+
+          <div
+            className={styles.enlargedVideoContent}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <video
+              autoPlay
+              playsInline
+              ref={(ref) => {
+                if (ref && selectedVideo.stream) {
+                  ref.srcObject = selectedVideo.stream;
+                }
+              }}
+            />
+
+            <div className={styles.participantName}>
+              {selectedVideo.username || "Participant"}
+            </div>
           </div>
         </div>
       )}
