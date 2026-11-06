@@ -361,6 +361,12 @@ export default function VideoMeetComponent() {
 
       socketRef.current.on("chat-message", addMessage);
 
+      socketRef.current.on("message-deleted", (messageId) => {
+        setMessages((prevMessages) =>
+          prevMessages.filter((item) => item.id !== messageId),
+        );
+      });
+
       socketRef.current.on("user-left", (id, name) => {
         setVideos((videos) => videos.filter((video) => video.socketId !== id));
 
@@ -539,11 +545,13 @@ export default function VideoMeetComponent() {
     setMessage(e.target.value);
   };
 
-  const addMessage = (data, sender, socketIdSender, timestamp) => {
+  const addMessage = (data, sender, socketIdSender, timestamp, messageId) => {
     setMessages((prevMessages) => [
       ...prevMessages,
       {
+        id: messageId,
         sender: sender,
+        senderSocketId: socketIdSender,
         data: data,
         timestamp: timestamp,
       },
@@ -560,6 +568,14 @@ export default function VideoMeetComponent() {
     setMessage("");
 
     // this.setState({ message: "", sender: username })
+  };
+
+  let deleteMessage = (messageId) => {
+    if (!window.confirm("Are you sure you want to delete this message?")) {
+      return;
+    }
+
+    socketRef.current.emit("delete-message", messageId);
   };
 
   let connect = async () => {
@@ -633,8 +649,23 @@ export default function VideoMeetComponent() {
                   {messages.length !== 0 ? (
                     messages.map((item, index) => {
                       return (
-                        <div style={{ marginBottom: "20px" }} key={index}>
-                          <p style={{ fontWeight: "bold" }}>{item.sender}</p>
+                        <div
+                          style={{ marginBottom: "20px" }}
+                          key={item.id || index}
+                        >
+                          <div className={styles.messageHeader}>
+                            <p style={{ fontWeight: "bold" }}>{item.sender}</p>
+
+                            {item.senderSocketId === socketIdRef.current && (
+                              <button
+                                className={styles.deleteMessageButton}
+                                onClick={() => deleteMessage(item.id)}
+                                title="Delete message"
+                              >
+                                ⋮
+                              </button>
+                            )}
+                          </div>
 
                           <p>{item.data}</p>
 

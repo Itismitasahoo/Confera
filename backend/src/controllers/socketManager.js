@@ -45,6 +45,8 @@ export const connectToSocket = (server) => {
             messages[path][a].data,
             messages[path][a].sender,
             messages[path][a]["socket-id-sender"],
+            messages[path][a].timestamp,
+            messages[path][a].id,
           );
         }
       }
@@ -76,6 +78,7 @@ export const connectToSocket = (server) => {
         const timestamp = new Date().toISOString();
 
         const message = {
+          id: `${Date.now()}-${socket.id}-${Math.random().toString(36).slice(2)}`,
           data: data,
           sender: sender,
           "socket-id-sender": socket.id,
@@ -92,9 +95,44 @@ export const connectToSocket = (server) => {
             sender,
             socket.id,
             timestamp,
+            message.id,
           );
         }
       }
+    });
+
+    // Delete a chat message
+    socket.on("delete-message", (messageId) => {
+      const [matchingRoom, found] = Object.entries(connections).reduce(
+        ([room, isFound], [roomKey, roomValue]) => {
+          if (!isFound && roomValue.includes(socket.id)) {
+            return [roomKey, true];
+          }
+
+          return [room, isFound];
+        },
+        ["", false],
+      );
+
+      if (!found || !messages[matchingRoom]) return;
+
+      const messageIndex = messages[matchingRoom].findIndex(
+        (msg) => msg.id === messageId,
+      );
+
+      if (messageIndex === -1) return;
+
+      if (
+        messages[matchingRoom][messageIndex]["socket-id-sender"] !== socket.id
+      ) {
+        return;
+      }
+
+      messages[matchingRoom].splice(messageIndex, 1);
+
+      connections[matchingRoom].forEach((clientId) => {
+        io.to(clientId).emit("message-deleted", messageId);
+      });
     });
 
     // User disconnects

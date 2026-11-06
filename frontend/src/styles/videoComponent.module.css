@@ -529,3 +529,27 @@
   object-fit: cover;
   transform: scaleX(-1);
 }
+.messageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.deleteMessageButton {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 6px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.deleteMessageButton:hover {
+  background: rgba(255, 117, 79, 0.15);
+  color: #ff8a65;
+}
