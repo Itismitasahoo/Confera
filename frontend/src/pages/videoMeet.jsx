@@ -86,6 +86,8 @@ export default function VideoMeetComponent() {
 
   const [selectedVideo, setSelectedVideo] = useState(null);
 
+  const [messageToDelete, setMessageToDelete] = useState(null);
+
   const copyMeetingCode = async () => {
     try {
       await navigator.clipboard.writeText(meetingCode);
@@ -662,11 +664,14 @@ export default function VideoMeetComponent() {
   };
 
   let deleteMessage = (messageId) => {
-    if (!window.confirm("Are you sure you want to delete this message?")) {
-      return;
-    }
+    setMessageToDelete(messageId);
+  };
 
-    socketRef.current.emit("delete-message", messageId);
+  const confirmDeleteMessage = () => {
+    if (!messageToDelete) return;
+
+    socketRef.current.emit("delete-message", messageToDelete);
+    setMessageToDelete(null);
   };
 
   let connect = async () => {
@@ -870,7 +875,7 @@ export default function VideoMeetComponent() {
                 <video
                   data-socket={video.socketId}
                   ref={(ref) => {
-                    if (ref && video.stream) {
+                    if (ref && video.stream && ref.srcObject !== video.stream) {
                       ref.srcObject = video.stream;
                     }
                   }}

@@ -618,3 +618,78 @@
   left: 15px;
   z-index: 2;
 }
+/* Delete confirmation overlay */
+.deleteConfirmOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+/* Confirmation dialog */
+.deleteConfirmDialog {
+  width: 100%;
+  max-width: 400px;
+  padding: 28px;
+  border-radius: 16px;
+  background: rgba(22, 36, 58, 0.97);
+  border: 1px solid rgba(255, 117, 79, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.deleteConfirmDialog h3 {
+  margin: 0 0 12px;
+  color: #ff8a65;
+  font-size: 21px;
+}
+
+.deleteConfirmDialog p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.deleteConfirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.cancelDeleteButton,
+.confirmDeleteButton {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelDeleteButton {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.cancelDeleteButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.confirmDeleteButton {
+  background: #ff754f;
+  border: 1px solid #ff754f;
+  color: white;
+}
+
+.confirmDeleteButton:hover {
+  background: #e85f3b;
+  border-color: #e85f3b;
+}
