@@ -444,6 +444,12 @@ export default function VideoMeetComponent() {
       socketRef.current.emit("join-call", meetingCode, username);
       socketIdRef.current = socketRef.current.id;
 
+      // Prevent duplicate event listeners on reconnection
+      socketRef.current.off("chat-message");
+      socketRef.current.off("message-deleted");
+      socketRef.current.off("user-left");
+      socketRef.current.off("user-joined");
+
       socketRef.current.on("chat-message", addMessage);
 
       socketRef.current.on("message-deleted", (messageId) => {
