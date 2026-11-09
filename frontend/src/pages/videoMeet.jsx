@@ -68,6 +68,8 @@ export default function VideoMeetComponent() {
 
   let [messages, setMessages] = useState([]);
 
+  let [messageToDelete, setMessageToDelete] = useState(null);
+
   let [message, setMessage] = useState("");
 
   const [meetingActivity, setMeetingActivity] = useState([]);
@@ -688,6 +690,13 @@ export default function VideoMeetComponent() {
     socketRef.current.emit("delete-message", messageId);
   };
 
+  const confirmDeleteMessage = () => {
+    if (!messageToDelete) return;
+
+    deleteMessage(messageToDelete);
+    setMessageToDelete(null);
+  };
+
   let connect = async () => {
     try {
       await addToUserHistory(meetingCode);
@@ -769,7 +778,7 @@ export default function VideoMeetComponent() {
                             {item.senderSocketId === socketIdRef.current && (
                               <button
                                 className={styles.deleteMessageButton}
-                                onClick={() => deleteMessage(item.id)}
+                                onClick={() => setMessageToDelete(item.id)}
                                 title="Delete message"
                               >
                                 ⋮
@@ -798,6 +807,35 @@ export default function VideoMeetComponent() {
                     <p>No Messages Yet</p>
                   )}
                 </div>
+
+                {messageToDelete && (
+                  <div className={styles.deleteConfirmOverlay}>
+                    <div className={styles.deleteConfirmDialog}>
+                      <h3>Delete Message?</h3>
+
+                      <p>
+                        Are you sure you want to delete this message? This
+                        action cannot be undone.
+                      </p>
+
+                      <div className={styles.deleteConfirmActions}>
+                        <button
+                          className={styles.cancelDeleteButton}
+                          onClick={() => setMessageToDelete(null)}
+                        >
+                          Cancel
+                        </button>
+
+                        <button
+                          className={styles.confirmDeleteButton}
+                          onClick={confirmDeleteMessage}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className={styles.chattingArea}>
                   <TextField

@@ -622,13 +622,13 @@
 .deleteConfirmOverlay {
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(5px);
 }
 
 /* Confirmation dialog */
