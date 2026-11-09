@@ -80,13 +80,13 @@ export default function VideoMeetComponent() {
 
   const videoRef = useRef([]);
 
+  const seenMeetingEvents = useRef(new Set());
+
   let [videos, setVideos] = useState([]);
 
   const [copied, setCopied] = useState(false);
 
   const [selectedVideo, setSelectedVideo] = useState(null);
-
-  const [messageToDelete, setMessageToDelete] = useState(null);
 
   const copyMeetingCode = async () => {
     try {
@@ -463,27 +463,39 @@ export default function VideoMeetComponent() {
       socketRef.current.on("user-left", (id, name) => {
         setVideos((videos) => videos.filter((video) => video.socketId !== id));
 
-        setMeetingActivity((prev) => [
-          ...prev,
-          {
-            id: Date.now(),
-            text: `${name || "A participant"} left the meeting`,
-          },
-        ]);
+        const eventKey = `left-${id}`;
+
+        if (!seenMeetingEvents.current.has(eventKey)) {
+          seenMeetingEvents.current.add(eventKey);
+
+          setMeetingActivity((prev) => [
+            ...prev,
+            {
+              id: eventKey,
+              text: `${name || "A participant"} left the meeting`,
+            },
+          ]);
+        }
       });
 
       socketRef.current.on("user-joined", (id, clients, usernames) => {
         // Show notification when another participant joins
         if (id !== socketIdRef.current) {
-          const joinedName = usernames?.[id] || "A participant";
+          const eventKey = `joined-${id}`;
 
-          setMeetingActivity((prev) => [
-            ...prev,
-            {
-              id: Date.now(),
-              text: `${joinedName} joined the meeting`,
-            },
-          ]);
+          if (!seenMeetingEvents.current.has(eventKey)) {
+            seenMeetingEvents.current.add(eventKey);
+
+            const joinedName = usernames?.[id] || "A participant";
+
+            setMeetingActivity((prev) => [
+              ...prev,
+              {
+                id: eventKey,
+                text: `${joinedName} joined the meeting`,
+              },
+            ]);
+          }
         }
 
         clients.forEach((socketListId) => {
@@ -639,19 +651,26 @@ export default function VideoMeetComponent() {
   };
 
   const addMessage = (data, sender, socketIdSender, timestamp, messageId) => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        id: messageId,
-        sender: sender,
-        senderSocketId: socketIdSender,
-        data: data,
-        timestamp: timestamp,
-      },
-    ]);
+    setMessages((prevMessages) => {
+      // Prevent duplicate messages using their unique IDs
+      if (prevMessages.some((item) => item.id === messageId)) {
+        return prevMessages;
+      }
+
+      return [
+        ...prevMessages,
+        {
+          id: messageId,
+          sender: sender,
+          senderSocketId: socketIdSender,
+          data: data,
+          timestamp: timestamp,
+        },
+      ];
+    });
 
     if (socketIdSender !== socketIdRef.current) {
-      setNewMessages((prevNewMessages) => prevNewMessages + 1);
+      setNewMessages((prev) => prev + 1);
     }
   };
 
@@ -664,14 +683,9 @@ export default function VideoMeetComponent() {
   };
 
   let deleteMessage = (messageId) => {
-    setMessageToDelete(messageId);
-  };
+    if (!socketRef.current || !messageId) return;
 
-  const confirmDeleteMessage = () => {
-    if (!messageToDelete) return;
-
-    socketRef.current.emit("delete-message", messageToDelete);
-    setMessageToDelete(null);
+    socketRef.current.emit("delete-message", messageId);
   };
 
   let connect = async () => {

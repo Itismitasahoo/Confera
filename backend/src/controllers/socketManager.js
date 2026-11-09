@@ -19,36 +19,39 @@ export const connectToSocket = (server) => {
     console.log("something connected");
 
     socket.on("join-call", (path, userName) => {
-      usernames[socket.id] = userName;
-      if (connections[path] === undefined) {
+      if (!connections[path]) {
         connections[path] = [];
       }
 
+      // Prevent duplicate joining by the same socket
+      if (connections[path].includes(socket.id)) {
+        return;
+      }
+
+      usernames[socket.id] = userName;
       connections[path].push(socket.id);
       timeOnline[socket.id] = new Date();
 
-      // Notify existing users that a new user joined
-      for (let a = 0; a < connections[path].length; a++) {
-        io.to(connections[path][a]).emit(
-          "user-joined",
-          socket.id,
-          connections[path],
-          usernames,
-        );
-      }
+      // Notify all participants
+      io.to(connections[path]).emit(
+        "user-joined",
+        socket.id,
+        [...connections[path]],
+        { ...usernames },
+      );
 
       // Send previous messages to the newly joined user
-      if (messages[path] !== undefined) {
-        for (let a = 0; a < messages[path].length; a++) {
-          io.to(socket.id).emit(
+      if (messages[path]) {
+        messages[path].forEach((msg) => {
+          socket.emit(
             "chat-message",
-            messages[path][a].data,
-            messages[path][a].sender,
-            messages[path][a]["socket-id-sender"],
-            messages[path][a].timestamp,
-            messages[path][a].id,
+            msg.data,
+            msg.sender,
+            msg["socket-id-sender"],
+            msg.timestamp,
+            msg.id,
           );
-        }
+        });
       }
     });
 
